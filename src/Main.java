@@ -1,8 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
 
 public class Main {
 
@@ -17,14 +14,6 @@ public class Main {
         return listOfLines;
     }
 
-    public static void printMatrix(String[][] matrix){
-        for(int i=0;i<matrix.length;i++){
-            System.out.println("");
-            for(int j=0;j<3;j++){
-                System.out.println(matrix[i][j]);
-            }
-        }
-    }
 
     public static String [][] listToMatrix(ArrayList<String> dataList){
         String[][] data=new String[325][3];
@@ -40,12 +29,13 @@ public class Main {
     public static void main(String[] args) throws IOException {
         //for now n9raw file ml mena before ma we implement l UI
         ArrayList<String> dataList= fileToArraylist("cnfs\\uf75-01.cnf");
-
         String[] parameters= dataList.get(7).split(" ");
         String[][] data=listToMatrix(dataList);
 
-        printMatrix(data);
 
-        RechercheEnLargeur rechercheEnLargeur= new RechercheEnLargeur(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]));
+        BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),5);
+        //bfs.printMatrix();
+        bfs.rechercheEnLargeur();
+
     }
 }

@@ -9,12 +9,34 @@ public class Recherche {
             variables[i]=-1;
         }
     }
+    
+    public int testAstar(int[] variables){
+        int nb_clausesSat = 0;  //Nombre de clauses satisfiables
+        boolean clauseSat;
 
-
-    public int testAstar(){
-        return 0;
+       for (int i=0; i<data.length; i++){
+           clauseSat = false;
+           int j = 0;
+           while (j<3 && clauseSat == false){
+               int litteral = Integer.parseInt(data[i][j]);
+               if (litteral>0){
+                   if (variables[litteral-1]==1){
+                       clauseSat = true;
+                       nb_clausesSat ++;
+                   }
+               }
+               else {
+                   litteral = - litteral;
+                   if(variables[litteral-1]==0){
+                       clauseSat = true;
+                       nb_clausesSat ++;
+                   }
+               }
+               j++;
+           }
+       }
+       return nb_clausesSat;
     }
-
 
     public boolean testAveugle(int[] variables){
         int i=0;Boolean bool=true;

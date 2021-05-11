@@ -14,7 +14,6 @@ public class Main {
         return listOfLines;
     }
 
-
     public static String [][] listToMatrix(ArrayList<String> dataList){
         String[][] data=new String[325][3];
         for( int i=8;i<dataList.size()-3;i++){
@@ -28,14 +27,14 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         //for now n9raw file ml mena before ma we implement l UI
-        ArrayList<String> dataList= fileToArraylist("cnfs\\uf75-01.cnf");
+        ArrayList<String> dataList= fileToArraylist("cnfs\\uf75-05.cnf");
         String[] parameters= dataList.get(7).split(" ");
         String[][] data=listToMatrix(dataList);
 
 
-        BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),5);
+        BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),20);
         //bfs.printMatrix();
-        bfs.rechercheEnLargeur();
+        int[]result=bfs.rechercheEnLargeur();
 
     }
 }

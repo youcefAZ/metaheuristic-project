@@ -38,11 +38,11 @@ public class Recherche {
        return nb_clausesSat;
     }
 
+
+    //Utilisée dans la rechercheAveugle(BFS et DFS) optimal car si une clause est fausse on sort directement.
     public boolean testAveugle(int[] variables){
         int i=0;Boolean bool=true;
-        System.out.println("IN AVEUGLE");
         while(i<data.length && bool){
-            System.out.println(i);
             bool=false;
             for(int j=0;j<3;j++){
                 int num=Integer.parseInt(data[i][j]);
@@ -60,6 +60,7 @@ public class Recherche {
             }
             i++;
         }
+        System.out.println("Stopped at clause : "+i);
         return bool;
     }
 
@@ -69,6 +70,12 @@ public class Recherche {
             for(int j=0;j<3;j++){
                 System.out.println(data[i][j]);
             }
+        }
+    }
+
+    public void printArray(int[] array){
+        for(int i=0;i<array.length;i++){
+            System.out.println(array[i]);
         }
     }
 }

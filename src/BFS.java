@@ -1,3 +1,6 @@
+
+import javafx.scene.control.ListView;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -6,12 +9,10 @@ import java.util.Random;
 public class BFS extends Recherche{
 
     int profondeur;
-    String cmplxT,cmplxS;
 
     public BFS(String[][] data, int variableLength, int profondeur) {
         super(data, variableLength);
         this.profondeur = profondeur;
-        cmplxT="O(b^d)";cmplxS="O(b^d)";
     }
 
     @Override
@@ -93,6 +94,5 @@ public class BFS extends Recherche{
         }
         return null;
     }
-
 
 }

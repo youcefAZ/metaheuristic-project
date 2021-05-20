@@ -17,10 +17,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class UIClass{
+
+    ArrayList<String> dataList;
+    String[][] data;
+    String[] parameters;
     //Creating all the variables for all the UI panels
     Scene mainScene;
     TabPane tabPane = new TabPane();
@@ -34,21 +37,24 @@ public class UIClass{
     TextField textFDfs= new TextField();
     TextField profD= new TextField();
     Button launchD= new Button("Launch");
-    TableView<String[]> tableViewB = new TableView();
-    TableColumn<String[], String> column1B = new TableColumn<>("Premier x");
-    TableColumn<String[], String> column2B = new TableColumn<>("Deuxiéme x");
-    TableColumn<String[], String> column3B = new TableColumn<>("Troisiéme x");
-    TableView<String[]> tableViewD = new TableView();
-    TableColumn<String[], String> column1D = new TableColumn<>("Premier x");
-    TableColumn<String[], String> column2D = new TableColumn<>("Deuxiéme x");
-    TableColumn<String[], String> column3D = new TableColumn<>("Troisiéme x");
+    TableView<Variable> tableViewB = new TableView();
+    TableColumn column1B = new TableColumn<>("Premier x");
+    TableColumn column2B = new TableColumn<>("Deuxiéme x");
+    TableColumn column3B = new TableColumn<>("Troisiéme x");
+    TableView<Variable> tableViewD = new TableView();
+    TableColumn column1D = new TableColumn<>("Premier x");
+    TableColumn column2D = new TableColumn<>("Deuxiéme x");
+    TableColumn column3D = new TableColumn<>("Troisiéme x");
     ListView listViewB = new ListView();
     ListView listViewD = new ListView();
+    Label resultB= new Label("");
+    Label resultD= new Label("");
+    Label elapsedB= new Label("");
+    Label elapsedD= new Label("");
 
 
 
     public UIClass(Stage primaryStage){
-
 
         fileChooser.setTitle("Choose CNF File");
         fileChooser.setInitialDirectory(new File("cnfs"));
@@ -71,7 +77,7 @@ public class UIClass{
         column2D.setMinWidth(100);
         column3D.setMinWidth(100);
 
-        listViewB.setMaxHeight(250);listViewD.setMaxHeight(250);
+        listViewB.setMaxHeight(215);listViewD.setMaxHeight(215);
 
 
         //Creating BFS tab
@@ -85,20 +91,28 @@ public class UIClass{
         gridBfs.add(profB,1,1);
         gridBfs.add(launchB,1,2);
 
+        column1B.setCellValueFactory(new PropertyValueFactory<Variable,String>("x1"));
+        column2B.setCellValueFactory(new PropertyValueFactory<Variable,String>("x2"));
+        column3B.setCellValueFactory(new PropertyValueFactory<Variable,String>("x3"));
+
+        column1D.setCellValueFactory(new PropertyValueFactory<Variable,String>("x1"));
+        column2D.setCellValueFactory(new PropertyValueFactory<Variable,String>("x2"));
+        column3D.setCellValueFactory(new PropertyValueFactory<Variable,String>("x3"));
 
         tableViewB.getColumns().addAll(column1B,column2B,column3B);
+        tableViewD.getColumns().addAll(column1D,column2D,column3D);
 
         VBox vbfs= new VBox();vbfs.setSpacing(20);
         vbfs.getChildren().addAll(gridBfs,tableViewB);
 
         VBox box2= new VBox();box2.setSpacing(20);
 
-        listViewB.getItems().add("X0 : 0");listViewB.getItems().add("X1 : 1");
-
-        box2.getChildren().addAll(new Label("Current depth : 0"),new Label("Current variables : "),listViewB);
+        box2.getChildren().addAll(new Label("Complexité temporelle : O(b^d)"),
+                new Label("Complexité spatiale : O(b^d)"),
+                new Label("Current variables : "),listViewB);
 
         VBox box3= new VBox();box3.setSpacing(20);
-        box3.getChildren().addAll(new Label("Result : "), new Label("No solution available."));
+        box3.getChildren().addAll(new Label("Result : "),elapsedB, resultB);
 
         HBox hbfs= new HBox();hbfs.setSpacing(30);hbfs.setPadding(new Insets(25,0,0,25));
         hbfs.getChildren().addAll(vbfs,box2,box3);
@@ -117,32 +131,20 @@ public class UIClass{
         gdfs.add(launchD,1,2);
 
 
-        tableViewD.getColumns().addAll(column1D,column2D,column3D);
-
         VBox vdfs= new VBox();vdfs.setSpacing(20);
         vdfs.getChildren().addAll(gdfs,tableViewD);
 
         VBox box2D= new VBox();box2D.setSpacing(20);
 
-        listViewD.getItems().add("X0 : 0");listViewD.getItems().add("X1 : 1");
-
-        box2D.getChildren().addAll(new Label("Current depth : 0"),new Label("Current variables : "),listViewD);
+        box2D.getChildren().addAll(new Label("Complexité temporelle : O(b^d)\nComplexité spatiale : O(b^d)"),
+                new Label("Current variables : "),listViewD);
 
         VBox box3D= new VBox();box3D.setSpacing(20);
-        box3D.getChildren().addAll(new Label("Result : "), new Label("No solution available."));
+        box3D.getChildren().addAll(new Label("Result : "),elapsedD, resultD);
 
         HBox hdfs= new HBox();hdfs.setSpacing(30);hdfs.setPadding(new Insets(25,0,0,25));
         hdfs.getChildren().addAll(vdfs,box2D,box3D);
 
-        buttonFileDfs.setOnAction(e ->{
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
-            try {
-                textFBfs.setText(selectedFile.getPath());
-                textFDfs.setText(selectedFile.getPath());
-            }catch (Exception f){
-                System.out.println("You didnt select a file");
-            }
-        });
 
 
         profB.textProperty().addListener(new ChangeListener<String>() {
@@ -165,17 +167,25 @@ public class UIClass{
             }
         });
 
-
-        ObservableList<String[]> observTB = FXCollections.observableArrayList();
+        int[] variables= new int[75];
+        for(int i=0;i<variables.length;i++){
+            variables[i]=-1;
+            listViewB.getItems().add("X"+i+": "+variables[i]);
+            listViewD.getItems().add("X"+i+": "+variables[i]);
+        }
 
         launchB.setOnAction(e->{
             try{
-                ArrayList<String> dataList= fileToArraylist(textFBfs.getText());
-                String[] parameters= dataList.get(7).split(" ");
-                String[][] data=listToMatrix(dataList);
+                dataList= fileToArraylist(textFBfs.getText());
+                parameters= dataList.get(7).split(" ");
+                data=listToMatrix(dataList);
+
                 BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(profB.getText()));
-                bfs.printMatrix();
+                long start = System.nanoTime();
                 int[]result=bfs.rechercheEnLargeur();
+                long end = System.nanoTime();
+                float elapsedTime = (float) (end - start)/1000000000;
+                updateList(listViewB,result,elapsedTime);
             }catch (Exception f){
                 System.out.println(f);
             }
@@ -186,11 +196,10 @@ public class UIClass{
             try {
                 textFBfs.setText(selectedFile.getPath());
                 textFDfs.setText(selectedFile.getPath());
-                ArrayList<String> dataList= fileToArraylist(textFBfs.getText());
-                String[] parameters= dataList.get(7).split(" ");
-                String[][] data=listToMatrix(dataList);
-                observTB.addAll(Arrays.asList(data));
-                tableViewB.setItems(observTB);
+                dataList= fileToArraylist(textFBfs.getText());
+                data=listToMatrix(dataList);
+                tableViewB.setItems(arrayToOBS(data));
+                tableViewD.setItems(arrayToOBS(data));
             }catch (Exception f){
                 System.out.println("You didnt select a file");
             }
@@ -201,6 +210,19 @@ public class UIClass{
             System.out.println("Executing DFS");
         });
 
+        buttonFileDfs.setOnAction(e ->{
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            try {
+                textFBfs.setText(selectedFile.getPath());
+                textFDfs.setText(selectedFile.getPath());
+                dataList= fileToArraylist(textFBfs.getText());
+                data=listToMatrix(dataList);
+                tableViewB.setItems(arrayToOBS(data));
+                tableViewD.setItems(arrayToOBS(data));
+            }catch (Exception f){
+                System.out.println("You didnt select a file");
+            }
+        });
 
 
         //Linking  the panels with their tabs
@@ -242,6 +264,33 @@ public class UIClass{
             }
         }
         return data;
+    }
+
+    public void updateList(ListView listView, int[] array,float elapsedTime){
+        if(listView.getId()==listViewB.getId()){
+            elapsedB.setText("Elapsed time : "+elapsedTime+" s");
+        }
+        else if(listView.getId()==listViewD.getId()){
+            elapsedD.setText("Elapsed time : "+elapsedTime+" s");
+        }
+
+        if(array!=null){
+            for(int i=0;i<array.length;i++){
+                listView.getItems().set(i,"X"+i+": "+array[i]);
+            }
+            resultB.setText("Our CNF is infered\n by the current variables.");
+        }
+        else {
+            resultB.setText("BFS Couldnt find variables\n to infer CNF ");
+        }
+    }
+
+    public ObservableList<Variable> arrayToOBS(String[][] data){
+        ObservableList<Variable> observTB = FXCollections.observableArrayList();
+        for(int i=0;i<data.length;i++){
+            observTB.add(new Variable(data[i][0],data[i][1],data[i][2]));
+        }
+        return observTB;
     }
 
 }

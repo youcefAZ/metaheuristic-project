@@ -6,7 +6,7 @@ c    mixed sat? no
 c    clause length = 3 
 c
 p cnf 75  325 
- 13 -11 -16 0
+13 -11 -16 0
 -23 57 -53 0
 16 -53 22 0
 -19 54 -67 0

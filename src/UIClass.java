@@ -345,7 +345,17 @@ public class UIClass{
 
     public static String [][] listToMatrix(ArrayList<String> dataList){
         String[][] data=new String[325][3];
-        for( int i=8;i<dataList.size()-3;i++){
+        String t=dataList.get(8);
+        if(dataList.get(8).charAt(0)==' '){
+             t=dataList.get(8).substring(1);
+        }
+
+        String[] temp1=t.split(" ");
+        for(int j=0;j<temp1.length-1;j++){
+            data[0][j]=temp1[j];
+        }
+
+        for( int i=9;i<dataList.size()-3;i++){
             String[] temp=dataList.get(i).split(" ");
             for(int j=0;j<temp.length-1;j++){
                 data[i-8][j]=temp[j];

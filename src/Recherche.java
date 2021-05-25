@@ -1,13 +1,17 @@
 public class Recherche {
     String[][] data;
     int[] variables;
+    int nbC;
+    int variableLength;
 
-    public Recherche(String[][] data, int variableLength) {
+    public Recherche(String[][] data, int variableLength, int nbC) {
         this.data = data;
         variables= new int[variableLength];
+        this.variableLength=variableLength;
         for(int i=0;i<variables.length;i++){
             variables[i]=-1;
         }
+        this.nbC=nbC;
     }
     
     public int testAstar(int[] variables){
@@ -35,6 +39,7 @@ public class Recherche {
                j++;
            }
        }
+        //System.out.println(nb_clausesSat);
        return nb_clausesSat;
     }
 
@@ -60,11 +65,10 @@ public class Recherche {
             }
             i++;
         }
-        System.out.println("Stopped at clause : "+i);
         return bool;
     }
 
-    public  void printMatrix(){
+    public  void printMatrix(String[][] data){
         for(int i=0;i<data.length;i++){
             System.out.println("");
             for(int j=0;j<3;j++){
@@ -75,7 +79,8 @@ public class Recherche {
 
     public void printArray(int[] array){
         for(int i=0;i<array.length;i++){
-            System.out.println(array[i]);
+            System.out.print(array[i]+", ");
         }
+        System.out.println("");
     }
 }

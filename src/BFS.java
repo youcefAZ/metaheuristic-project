@@ -10,14 +10,14 @@ public class BFS extends Recherche{
 
     int profondeur;
 
-    public BFS(String[][] data, int variableLength, int profondeur) {
-        super(data, variableLength);
+    public BFS(String[][] data, int variableLength,int nbC, int profondeur) {
+        super(data, variableLength,nbC);
         this.profondeur = profondeur;
     }
 
     @Override
-    public void printMatrix() {
-        super.printMatrix();
+    public void printMatrix(String[][] data) {
+        super.printMatrix(data);
     }
 
     @Override
@@ -30,8 +30,8 @@ public class BFS extends Recherche{
     //bool1 represente si on trouve une solution, et bool2 si on est arrivé a la profondeur max donnée.
     int[] rechercheEnLargeur() {
         Boolean bool=false,bool2=false;
-        TreeNode node=new TreeNode(variables,0);
-        Queue<TreeNode> queue = new LinkedList<TreeNode>();
+        TreeNode node=new TreeNode(variables,0);  //Creating the first node of -1.
+        Queue<TreeNode> queue = new LinkedList<TreeNode>();       //Queue will give us the order of breadth first
         queue.add(node);
         while (!queue.isEmpty() && bool==false && bool2==false)
         {
@@ -43,15 +43,13 @@ public class BFS extends Recherche{
             }
             else
             {
-                bool=testAveugle(tempNode.variables);
-                System.out.println(bool);
-                System.out.println("profondeur : "+tempNode.profondeur);
-                System.out.println("----------------------");
+                bool=testAveugle(tempNode.variables);   //testing if current node is satisfiable
                 if(bool==true){
                     System.out.println("Solution trouvée! :");
                     printArray(tempNode.variables);
                     return tempNode.variables;
                 }
+                //node isnt satisfiable, we create the childs
                 TreeNode nodeLeft=nextVar(tempNode.variables,tempNode.profondeur+1,0);
                 tempNode.left=nodeLeft;
                 TreeNode nodeRight=nextVar(tempNode.variables,tempNode.profondeur+1,1);
@@ -81,16 +79,20 @@ public class BFS extends Recherche{
 
     //Cet algorithme sert a creer le prochain tableau de variable a utilisée a partir du tableau pére.
     public TreeNode nextVar(int[] variables,int profondeur,int lfri){
-        int i=0;
-        int[] temporary=variables.clone();
-        while( i< variables.length && variables[i]!=-1){
-            i++;
-        }
+        if(profondeur<=this.profondeur){    //si profondeur>profondeurDonnée veut dire on a atteint le max prof.
+            int i=0;
+            int[] temporary=variables.clone();
 
-        if(i!= variables.length){
-            temporary[i]=lfri;
-            TreeNode treeNode= new TreeNode(temporary,profondeur);
-            return treeNode;
+            //we increment i until we arrive at the var to use in child nodes
+            while( i< variables.length && variables[i]!=-1){
+                i++;
+            }
+
+            if(i!= variables.length){
+                temporary[i]=lfri;  //we change the var i to 0 or 1 to create the child node
+                TreeNode treeNode= new TreeNode(temporary,profondeur);
+                return treeNode;
+            }
         }
         return null;
     }

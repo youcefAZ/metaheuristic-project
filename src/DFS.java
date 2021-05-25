@@ -4,8 +4,8 @@ public class DFS extends Recherche{
 
     int profondeur;
 
-    public DFS(String[][] data, int variableLength, int profondeur) {
-        super(data, variableLength);
+    public DFS(String[][] data, int variableLength,int nbC, int profondeur) {
+        super(data, variableLength, nbC);
         this.profondeur = profondeur;
     }
 
@@ -47,9 +47,7 @@ public class DFS extends Recherche{
         if (sat){
             System.out.println("Solution trouvée ! Cette base est satisfiable\n");
             System.out.println("Solution : ");
-            for(int i=0;i<tempVariables.length;i++){
-                System.out.println(" x"+i+" = "+tempVariables[i]);
-            }
+            printArray(tempVariables);
             return tempVariables;
         }
         else {
@@ -59,7 +57,7 @@ public class DFS extends Recherche{
     }
 
     @Override
-    public void printMatrix() {
-        super.printMatrix();
+    public void printMatrix(String[][] data) {
+        super.printMatrix(data);
     }
 }

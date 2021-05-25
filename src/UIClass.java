@@ -67,8 +67,7 @@ public class UIClass{
     ObservableList<String> heuristics =
             FXCollections.observableArrayList(
                     "Heuristic 1",
-                    "Heuristic 2",
-                    "Heuristic 3"
+                    "Heuristic 2"
             );
 
 
@@ -233,44 +232,42 @@ public class UIClass{
             }
         });
 
-        int[] variables= new int[75];
-        for(int i=0;i<variables.length;i++){
-            variables[i]=-1;
-            listViewB.getItems().add("X"+i+": "+variables[i]);
-            listViewD.getItems().add("X"+i+": "+variables[i]);
-            listViewA.getItems().add("X"+i+": "+variables[i]);
-        }
 
         launchB.setOnAction(e->{
             try{
                 dataList= fileToArraylist(textFBfs.getText());
-                parameters= dataList.get(7).split(" ");
-                data=listToMatrix(dataList);
-
-                BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(profB.getText()));
+                String[] parameters= dataList.get(7).split(" ");
+                data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
+                BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),Integer.parseInt(profB.getText()));
                 long start = System.nanoTime();
                 int[]result=bfs.rechercheEnLargeur();
                 long end = System.nanoTime();
                 float elapsedTime = (float) (end - start)/1000000000;
                 updateList(listViewB,result,elapsedTime);
             }catch (Exception f){
-                System.out.println(f);
+                System.out.println("ohwell, "+f);
             }
+
+
         });
 
         buttonFileBfs.setOnAction(e ->{
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            try {
+                File selectedFile = fileChooser.showOpenDialog(primaryStage);
                 updateTab(selectedFile.getPath());
+            }catch (Exception c){
+                System.out.println(c);
+            }
         });
 
 
         launchD.setOnAction(e->{
             try{
                 System.out.println("Executing DFS");
-                dataList= fileToArraylist(textFBfs.getText());
-                parameters= dataList.get(7).split(" ");
-                data=listToMatrix(dataList);
-                DFS dfs= new DFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(profD.getText()));
+                ArrayList<String> dataList= fileToArraylist(textFDfs.getText());
+                String[] parameters= dataList.get(7).split(" ");
+                String[][] data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
+                DFS dfs= new DFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),Integer.parseInt(profD.getText()));
                 long start = System.nanoTime();
                 int [] DFSResult = dfs.rechercheEnProfondeur();
                 long end = System.nanoTime();
@@ -278,22 +275,46 @@ public class UIClass{
                 updateList(listViewD,DFSResult,elapsedTime);
 
             }catch (Exception f){
-                System.out.println(f);
+                System.out.println("ohwell, "+f);
             }
         });
 
         buttonFileDfs.setOnAction(e ->{
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            try {
+                File selectedFile = fileChooser.showOpenDialog(primaryStage);
                 updateTab(selectedFile.getPath());
+            }catch (Exception c){
+                System.out.println(c);
+            }
         });
 
         launchA.setOnAction(e->{
             System.out.println("Executing A star");
+            try {
+                dataList= fileToArraylist(textFAs.getText());
+                String[] parameters= dataList.get(7).split(" ");
+                data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
+
+                Astar astar= new Astar(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),"heuristic");
+
+                long start = System.nanoTime();
+                int[] AstarRes=astar.astar_algo();
+                long end = System.nanoTime();
+                float elapsedTime = (float) (end - start)/1000000000;
+                updateList(listViewA,AstarRes,elapsedTime);
+            }catch ( Exception f){
+                System.out.println(f);
+            }
+
         });
 
         buttonFileAs.setOnAction(e ->{
-            File selectedFile = fileChooser.showOpenDialog(primaryStage);
-            updateTab(selectedFile.getPath());
+            try {
+                File selectedFile = fileChooser.showOpenDialog(primaryStage);
+                updateTab(selectedFile.getPath());
+            }catch (Exception c){
+                System.out.println(c);
+            }
         });
 
 
@@ -322,7 +343,9 @@ public class UIClass{
 
         try{
             dataList= fileToArraylist(textFBfs.getText());
-            data=listToMatrix(dataList);
+            String[] parameters= dataList.get(7).split(" ");
+            data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
+            initLists(Integer.parseInt(parameters[2]));
             tableViewB.setItems(arrayToOBS(data));
             tableViewD.setItems(arrayToOBS(data));
             tableViewA.setItems(arrayToOBS(data));
@@ -343,11 +366,11 @@ public class UIClass{
         return listOfLines;
     }
 
-    public static String [][] listToMatrix(ArrayList<String> dataList){
-        String[][] data=new String[325][3];
+    public static String [][] listToMatrix(ArrayList<String> dataList,int length){
+        String[][] data=new String[length][3];
         String t=dataList.get(8);
         if(dataList.get(8).charAt(0)==' '){
-             t=dataList.get(8).substring(1);
+            t=dataList.get(8).substring(1);
         }
 
         String[] temp1=t.split(" ");
@@ -363,6 +386,7 @@ public class UIClass{
         }
         return data;
     }
+
 
     public void updateList(ListView listView, int[] array,float elapsedTime){
 
@@ -390,9 +414,36 @@ public class UIClass{
                 resultD.setText("DFS Couldnt find variables\n to infer CNF ");
             }
         }
+        else {
+            elapsedA.setText("Elapsed time : "+elapsedTime+" s");
+            if(array!=null){
+                for(int i=0;i<array.length;i++){
+                    listView.getItems().set(i,"X"+i+": "+array[i]);
+                }
+                resultA.setText("Our CNF is infered\n by the current variables.");
+            }
+            else {
+                resultA.setText("BFS Couldnt find variables\n to infer CNF ");
+            }
+        }
 
 
     }
+
+    public void initLists(int length){
+        listViewB.getItems().remove(0,listViewD.getItems().size());
+        listViewD.getItems().remove(0,listViewD.getItems().size());
+        listViewA.getItems().remove(0,listViewD.getItems().size());
+
+        int[] variables= new int[length];
+        for(int i=0;i<length;i++){
+            variables[i]=-1;
+            listViewB.getItems().add("X"+i+": "+variables[i]);
+            listViewD.getItems().add("X"+i+": "+variables[i]);
+            listViewA.getItems().add("X"+i+": "+variables[i]);
+        }
+    }
+
 
     public ObservableList<Variable> arrayToOBS(String[][] data){
         ObservableList<Variable> observTB = FXCollections.observableArrayList();

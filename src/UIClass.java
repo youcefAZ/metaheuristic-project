@@ -66,8 +66,9 @@ public class UIClass{
 
     ObservableList<String> heuristics =
             FXCollections.observableArrayList(
-                    "Heuristic 1",
-                    "Heuristic 2"
+                    "TD Heuristic",
+                    "Partial-diff Heuristic",
+                    "Full-diff Heuristic"
             );
 
 
@@ -295,7 +296,7 @@ public class UIClass{
                 String[] parameters= dataList.get(7).split(" ");
                 data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
 
-                Astar astar= new Astar(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),"heuristic");
+                Astar astar= new Astar(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),comboAs.getValue().toString());
 
                 long start = System.nanoTime();
                 int[] AstarRes=astar.astar_algo();
@@ -393,8 +394,9 @@ public class UIClass{
         if(listView.getId()==listViewB.getId()){
             elapsedB.setText("Elapsed time : "+elapsedTime+" s");
             if(array!=null){
+                listView.getItems().remove(0,listView.getItems().size());
                 for(int i=0;i<array.length;i++){
-                    listView.getItems().set(i,"X"+i+": "+array[i]);
+                    listView.getItems().add(i,"X"+i+": "+array[i]);
                 }
                 resultB.setText("Our CNF is infered\n by the current variables.");
             }
@@ -405,8 +407,9 @@ public class UIClass{
         else if(listView.getId()==listViewD.getId()){
             elapsedD.setText("Elapsed time : "+elapsedTime+" s");
             if(array!=null){
+                listView.getItems().remove(0,listView.getItems().size());
                 for(int i=0;i<array.length;i++){
-                    listView.getItems().set(i,"X"+i+": "+array[i]);
+                    listView.getItems().add(i,"X"+i+": "+array[i]);
                 }
                 resultD.setText("Our CNF is infered\n by the current variables.");
             }
@@ -417,8 +420,9 @@ public class UIClass{
         else {
             elapsedA.setText("Elapsed time : "+elapsedTime+" s");
             if(array!=null){
+                listView.getItems().remove(0,listView.getItems().size());
                 for(int i=0;i<array.length;i++){
-                    listView.getItems().set(i,"X"+i+": "+array[i]);
+                    listView.getItems().add(i,"X"+i+": "+array[i]);
                 }
                 resultA.setText("Our CNF is infered\n by the current variables.");
             }

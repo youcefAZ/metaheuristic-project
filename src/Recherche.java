@@ -68,11 +68,21 @@ public class Recherche {
         return bool;
     }
 
+
     public  void printMatrix(String[][] data){
         for(int i=0;i<data.length;i++){
             System.out.println("");
             for(int j=0;j<3;j++){
                 System.out.println(data[i][j]);
+            }
+        }
+    }
+
+    public  void printMatrix(int[][] data){
+        for(int i=0;i<data.length;i++){
+            System.out.println("");
+            for(int j=0;j<data[i].length;j++){
+                System.out.print(data[i][j]+", ");
             }
         }
     }

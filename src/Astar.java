@@ -3,7 +3,7 @@ import java.util.LinkedList;
 public class Astar extends Recherche{
 
     String heuristic;       //useless for now
-    int[][] heuristicData1;  //
+    int[][] heuristicData;  //used by partial-diff OR full-diff heuristic
     int[] heuristicArray2;  //heuristic of TD
     int[] usageArray;       //i value is 0 when we didnt use the variable yet, else 1,
                             //Used to get the best unused var to use in the childs of a node.
@@ -20,11 +20,12 @@ public class Astar extends Recherche{
             fillHeuristicArray2();      //gives every variable a score based on the td heuristic
         }
         else if(heuristic.equals("Partial-diff Heuristic")){
-            heuristicData1=new int[variableLength][nbC];
+            heuristicData =new int[variableLength][nbC];
             fillHeuristicData1();
         }
         else {
-            System.out.println("heuristic not done yet");
+            heuristicData= new int[variableLength*2][nbC];
+            fillHeuristic3();
         }
 
 
@@ -61,6 +62,9 @@ public class Astar extends Recherche{
             }
             else if(heuristic.equals("Partial-diff Heuristic")){
                 bestVar= chooseV1(temp.variables);  //get the highest scoring unused var to use it in children
+            }
+            else {
+                bestVar=chooseV3(temp.variables);
             }
 
 
@@ -125,10 +129,10 @@ public class Astar extends Recherche{
 
     public int chooseV1(int[] vars){
         int[] validClauses= initArray(nbC,0);
-        for(int i=0;i<heuristicData1.length;i++){
+        for(int i = 0; i< heuristicData.length; i++){
             if(vars[i]!=-1){
                 for(int j=0;j<nbC;j++){
-                    if(heuristicData1[i][j]==1){
+                    if(heuristicData[i][j]==1){
                         validClauses[j]=1;
                     }
                 }
@@ -140,7 +144,7 @@ public class Astar extends Recherche{
             if(usageArray[i]!=1){
                 int k=0;
                 for(int j=0;j<nbC;j++){
-                    if(heuristicData1[i][j]==1 && validClauses[j]!=1){
+                    if(heuristicData[i][j]==1 && validClauses[j]!=1){
                         k++;
                     }
                 }
@@ -171,6 +175,37 @@ public class Astar extends Recherche{
         usageArray[max]=1;
         return max;
     }
+
+
+    public int chooseV3(int[] vars){
+        int[] validClauses= initArray(nbC,0);
+        for(int i = 0; i< heuristicData.length; i++){
+            if(vars[i%variableLength]!=-1){
+                for(int j=0;j<nbC;j++){
+                    if(heuristicData[i][j]==1){
+                        validClauses[j]=1;
+                    }
+                }
+            }
+        }
+
+        int best=0,nbBest=0;
+        for(int i=0;i<heuristicData.length;i++){
+            if(usageArray[i%variableLength]!=1){
+                int k=0;
+                for(int j=0;j<nbC;j++){
+                    if(heuristicData[i][j]==1 && validClauses[j]!=1){
+                        k++;
+                    }
+                }
+                if(k>=nbBest){
+                    best=i;
+                }
+            }
+        }
+        return best%variableLength;
+    }
+
 
 
     //fill the array2 with heuristic 2 values (clauses satisfied by x+xBAR, h te3 td exemple)
@@ -211,14 +246,14 @@ public class Astar extends Recherche{
                 if (litteral>0){
                     if (temp[litteral-1]==1){
                         clauseSat = true;
-                        heuristicData1[i][j]=1;
+                        heuristicData[i][j]=1;
                     }
                 }
                 else {
                     litteral = - litteral;
                     if(temp[litteral-1]==0){
                         clauseSat = true;
-                        heuristicData1[i][j]=1;
+                        heuristicData[i][j]=1;
                     }
                 }
                 k++;
@@ -227,11 +262,23 @@ public class Astar extends Recherche{
         }
     }
 
+    public void fillHeuristic3(){
+        int[] temp;
+        initHeuristic1();
+        for(int i = 0; i< variableLength; i++){
+            temp=variables.clone();
+            temp[i]=0;
+            validateClauses(i,temp);
+            temp[i]=1;
+            validateClauses(i+variableLength,temp);
+        }
+    }
+
 
     public void initHeuristic1(){
-        for(int i=0;i<variableLength;i++){
+        for(int i=0;i< heuristicData.length;i++){
             for(int j=0;j<nbC;j++){
-                heuristicData1[i][j]=0;
+                heuristicData[i][j]=0;
             }
         }
     }

@@ -75,17 +75,17 @@ public class UIClass{
     public UIClass(Stage primaryStage){
 
         fileChooser.setTitle("Choose CNF File");
-        fileChooser.setInitialDirectory(new File("cnfs"));
+        //fileChooser.setInitialDirectory(new File("cnfs"));
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CNF Files", "*.cnf"));
 
         fileChooser2.setTitle("Choose CNF File");
-        fileChooser2.setInitialDirectory(new File("cnfs"));
+        //fileChooser2.setInitialDirectory(new File("cnfs"));
         fileChooser2.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CNF Files", "*.cnf"));
 
         fileChooser3.setTitle("Choose CNF File");
-        fileChooser3.setInitialDirectory(new File("cnfs"));
+        //fileChooser3.setInitialDirectory(new File("cnfs"));
         fileChooser3.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("CNF Files", "*.cnf"));
 

@@ -63,10 +63,18 @@ public class UIClass{
     Label elapsedB= new Label("");
     Label elapsedD= new Label("");
     Label elapsedA= new Label("");
+    Label maxTimeB= new Label("Max time : (s)");
+    Label maxTimeD= new Label("Max time : (s)");
+    Label maxTimeA= new Label("Max time : (s)");
+    TextField testMaxTimeB= new TextField();
+    TextField testMaxTimeD= new TextField();
+    TextField testMaxTimeA= new TextField();
+
 
     ObservableList<String> heuristics =
             FXCollections.observableArrayList(
                     "TD Heuristic",
+                    "TD-long heuristic",
                     "Partial-diff Heuristic",
                     "Full-diff Heuristic"
             );
@@ -105,7 +113,7 @@ public class UIClass{
         column2A.setMinWidth(100);
         column3A.setMinWidth(100);
 
-        listViewB.setMaxHeight(215);listViewD.setMaxHeight(215);listViewA.setMaxHeight(215);
+        listViewB.setMaxHeight(265);listViewD.setMaxHeight(265);listViewA.setMaxHeight(265);
 
 
         //Creating BFS tab
@@ -117,7 +125,9 @@ public class UIClass{
         gridBfs.add(hBoxFBfs,1,0);
         gridBfs.add(new Label("Depth : "),0,1);
         gridBfs.add(profB,1,1);
-        gridBfs.add(launchB,1,2);
+        gridBfs.add(maxTimeB,0,2);
+        gridBfs.add(testMaxTimeB,1,2);
+        gridBfs.add(launchB,1,3);
 
         GridPane gridAs= new GridPane();gridAs.setHgap(25);gridAs.setVgap(25);
 
@@ -127,7 +137,9 @@ public class UIClass{
         gridAs.add(hBoxFAs,1,0);
         gridAs.add(new Label("heuristic : "),0,1);
         gridAs.add(comboAs,1,1);
-        gridAs.add(launchA,1,2);
+        gridAs.add(maxTimeA,0,2);
+        gridAs.add(testMaxTimeA,1,2);
+        gridAs.add(launchA,1,3);
 
         column1B.setCellValueFactory(new PropertyValueFactory<Variable,String>("x1"));
         column2B.setCellValueFactory(new PropertyValueFactory<Variable,String>("x2"));
@@ -188,7 +200,9 @@ public class UIClass{
         gdfs.add(hBoxFDfs,1,0);
         gdfs.add(new Label("Depth : "),0,1);
         gdfs.add(profD,1,1);
-        gdfs.add(launchD,1,2);
+        gdfs.add(maxTimeD,0,2);
+        gdfs.add(testMaxTimeD,1,2);
+        gdfs.add(launchD,1,3);
 
 
         VBox vdfs= new VBox();vdfs.setSpacing(20);
@@ -233,15 +247,47 @@ public class UIClass{
             }
         });
 
+        testMaxTimeB.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    testMaxTimeB.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        testMaxTimeD.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    testMaxTimeD.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+
+        testMaxTimeA.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    testMaxTimeA.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
 
         launchB.setOnAction(e->{
             try{
                 dataList= fileToArraylist(textFBfs.getText());
                 String[] parameters= dataList.get(7).split(" ");
                 data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
-                BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),Integer.parseInt(profB.getText()));
+                BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
+                        Integer.parseInt(profB.getText()),Integer.parseInt(testMaxTimeB.getText()));
                 long start = System.nanoTime();
-                int[]result=bfs.rechercheEnLargeur();
+                ReturnClass result=bfs.rechercheEnLargeur();
                 long end = System.nanoTime();
                 float elapsedTime = (float) (end - start)/1000000000;
                 updateList(listViewB,result,elapsedTime);
@@ -268,9 +314,10 @@ public class UIClass{
                 ArrayList<String> dataList= fileToArraylist(textFDfs.getText());
                 String[] parameters= dataList.get(7).split(" ");
                 String[][] data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
-                DFS dfs= new DFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),Integer.parseInt(profD.getText()));
+                DFS dfs= new DFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
+                        Integer.parseInt(profD.getText()),Integer.parseInt(testMaxTimeD.getText()));
                 long start = System.nanoTime();
-                int [] DFSResult = dfs.rechercheEnProfondeur();
+                ReturnClass DFSResult = dfs.rechercheEnProfondeur();
                 long end = System.nanoTime();
                 float elapsedTime = (float) (end - start)/1000000000;
                 updateList(listViewD,DFSResult,elapsedTime);
@@ -296,17 +343,17 @@ public class UIClass{
                 String[] parameters= dataList.get(7).split(" ");
                 data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
 
-                Astar astar= new Astar(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),comboAs.getValue().toString());
+                Astar astar= new Astar(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
+                        comboAs.getValue().toString(),Integer.parseInt(testMaxTimeA.getText()));
 
                 long start = System.nanoTime();
-                int[] AstarRes=astar.astar_algo();
+                ReturnClass AstarRes=astar.astar_algo();
                 long end = System.nanoTime();
                 float elapsedTime = (float) (end - start)/1000000000;
                 updateList(listViewA,AstarRes,elapsedTime);
             }catch ( Exception f){
                 System.out.println(f);
             }
-
         });
 
         buttonFileAs.setOnAction(e ->{
@@ -330,7 +377,7 @@ public class UIClass{
 
 
 
-        mainScene=new Scene(vBox,800,400);
+        mainScene=new Scene(vBox,825,450);
         primaryStage.setTitle("Meta-heuristic project");
         primaryStage.setScene(mainScene);
         primaryStage.show();
@@ -389,16 +436,16 @@ public class UIClass{
     }
 
 
-    public void updateList(ListView listView, int[] array,float elapsedTime){
+    public void updateList(ListView listView, ReturnClass returnC,float elapsedTime){
 
         if(listView.getId()==listViewB.getId()){
             elapsedB.setText("Elapsed time : "+elapsedTime+" s");
-            if(array!=null){
+            if(returnC.vars!=null){
                 listView.getItems().remove(0,listView.getItems().size());
-                for(int i=0;i<array.length;i++){
-                    listView.getItems().add(i,"X"+i+": "+array[i]);
+                for(int i=0;i<returnC.vars.length;i++){
+                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
                 }
-                resultB.setText("Our CNF is infered\n by the current variables.");
+                resultB.setText("Inferation : "+returnC.satisfied);
             }
             else {
                 resultB.setText("BFS Couldnt find variables\n to infer CNF ");
@@ -406,12 +453,12 @@ public class UIClass{
         }
         else if(listView.getId()==listViewD.getId()){
             elapsedD.setText("Elapsed time : "+elapsedTime+" s");
-            if(array!=null){
+            if(returnC.vars!=null){
                 listView.getItems().remove(0,listView.getItems().size());
-                for(int i=0;i<array.length;i++){
-                    listView.getItems().add(i,"X"+i+": "+array[i]);
+                for(int i=0;i<returnC.vars.length;i++){
+                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
                 }
-                resultD.setText("Our CNF is infered\n by the current variables.");
+                resultD.setText("Inferation : "+returnC.satisfied);
             }
             else {
                 resultD.setText("DFS Couldnt find variables\n to infer CNF ");
@@ -419,12 +466,12 @@ public class UIClass{
         }
         else {
             elapsedA.setText("Elapsed time : "+elapsedTime+" s");
-            if(array!=null){
+            if(returnC.vars!=null){
                 listView.getItems().remove(0,listView.getItems().size());
-                for(int i=0;i<array.length;i++){
-                    listView.getItems().add(i,"X"+i+": "+array[i]);
+                for(int i=0;i<returnC.vars.length;i++){
+                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
                 }
-                resultA.setText("Our CNF is infered\n by the current variables.");
+                resultA.setText("Inferation : "+returnC.satisfied+"\nScore : "+returnC.score);
             }
             else {
                 resultA.setText("BFS Couldnt find variables\n to infer CNF ");

@@ -4,13 +4,13 @@ public class DFS extends Recherche{
 
     int profondeur;
 
-    public DFS(String[][] data, int variableLength,int nbC, int profondeur) {
-        super(data, variableLength, nbC);
+    public DFS(String[][] data, int variableLength,int nbC, int profondeur,int maxTime) {
+        super(data, variableLength, nbC,maxTime);
         this.profondeur = profondeur;
     }
 
-    public int[] rechercheEnProfondeur() {
-
+    public ReturnClass rechercheEnProfondeur() {
+        Long start=System.nanoTime();
         boolean sat = false;
         Stack<TreeNode> stack = new Stack<TreeNode>();
         // Creer puis empiler la racine :
@@ -23,6 +23,13 @@ public class DFS extends Recherche{
 
         while (!stack.isEmpty() && !sat) {
             node = stack.pop();     // depiler la tete de pile
+
+            if((System.nanoTime()-start)/1000000000>=maxTime){
+                System.out.println("time limit reached");
+                ReturnClass returnClass= new ReturnClass(node.variables,false);
+                return returnClass;
+            }
+
             tempVariables = node.variables.clone();
             sat = testAveugle(tempVariables);
             prof = node.profondeur ;
@@ -48,7 +55,8 @@ public class DFS extends Recherche{
             System.out.println("Solution trouvée ! Cette base est satisfiable\n");
             System.out.println("Solution : ");
             printArray(tempVariables);
-            return tempVariables;
+            ReturnClass returnClass= new ReturnClass(tempVariables,false);
+            return returnClass;
         }
         else {
             System.out.println("Pas de solution avec cette limite de profondeur\n");

@@ -3,9 +3,11 @@ public class Recherche {
     int[] variables;
     int nbC;
     int variableLength;
+    int maxTime;
 
-    public Recherche(String[][] data, int variableLength, int nbC) {
+    public Recherche(String[][] data, int variableLength, int nbC,int maxTime) {
         this.data = data;
+        this.maxTime=maxTime;
         variables= new int[variableLength];
         this.variableLength=variableLength;
         for(int i=0;i<variables.length;i++){

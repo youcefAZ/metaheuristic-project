@@ -10,8 +10,8 @@ public class BFS extends Recherche{
 
     int profondeur;
 
-    public BFS(String[][] data, int variableLength,int nbC, int profondeur) {
-        super(data, variableLength,nbC);
+    public BFS(String[][] data, int variableLength,int nbC, int profondeur,int maxTime) {
+        super(data, variableLength,nbC,maxTime);
         this.profondeur = profondeur;
     }
 
@@ -28,7 +28,8 @@ public class BFS extends Recherche{
     //Dans cet algorithme, nous créeons une file qui vas assurer l'ordre de la recherche en largeur,
     //aprés chaque test de nos variables sur le data, nous enfilons les fils du noeud actuel.
     //bool1 represente si on trouve une solution, et bool2 si on est arrivé a la profondeur max donnée.
-    int[] rechercheEnLargeur() {
+    ReturnClass rechercheEnLargeur() {
+        Long start= System.nanoTime();
         Boolean bool=false,bool2=false;
         TreeNode node=new TreeNode(variables,0);  //Creating the first node of -1.
         Queue<TreeNode> queue = new LinkedList<TreeNode>();       //Queue will give us the order of breadth first
@@ -38,6 +39,13 @@ public class BFS extends Recherche{
 
             // poll() removes the present head.
             TreeNode tempNode = queue.poll();
+
+            if((System.nanoTime()-start)/1000000000>=maxTime){
+                System.out.println("time limit reached");
+                ReturnClass returnClass= new ReturnClass(tempNode.variables,false);
+                return returnClass;
+            }
+
             if(tempNode.profondeur>profondeur){
                 bool2=true;
             }
@@ -47,7 +55,8 @@ public class BFS extends Recherche{
                 if(bool==true){
                     System.out.println("Solution trouvée! :");
                     printArray(tempNode.variables);
-                    return tempNode.variables;
+                    ReturnClass returnClass= new ReturnClass(tempNode.variables,true);
+                    return returnClass;
                 }
                 //node isnt satisfiable, we create the childs
                 TreeNode nodeLeft=nextVar(tempNode.variables,tempNode.profondeur+1,0);

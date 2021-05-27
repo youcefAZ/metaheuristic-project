@@ -471,7 +471,7 @@ public class UIClass{
                 for(int i=0;i<returnC.vars.length;i++){
                     listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
                 }
-                resultA.setText("Inferation : "+returnC.satisfied+"\nScore : "+returnC.score);
+                resultA.setText("Inferation : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
             }
             else {
                 resultA.setText("BFS Couldnt find variables\n to infer CNF ");

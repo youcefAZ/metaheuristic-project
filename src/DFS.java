@@ -55,7 +55,7 @@ public class DFS extends Recherche{
             System.out.println("Solution trouvée ! Cette base est satisfiable\n");
             System.out.println("Solution : ");
             printArray(tempVariables);
-            ReturnClass returnClass= new ReturnClass(tempVariables,false);
+            ReturnClass returnClass= new ReturnClass(tempVariables,true);
             return returnClass;
         }
         else {

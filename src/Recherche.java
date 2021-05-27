@@ -1,7 +1,7 @@
 public class Recherche {
     String[][] data;
     int[] variables;
-    int nbC;
+    int nbC;//nbr clauses
     int variableLength;
     int maxTime;
 

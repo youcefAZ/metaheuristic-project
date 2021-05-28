@@ -11,7 +11,7 @@ public class DFS extends Recherche{
 
     public ReturnClass rechercheEnProfondeur() {
         Long start=System.nanoTime();
-        boolean sat = false;
+        int sat = 0;
         Stack<TreeNode> stack = new Stack<TreeNode>();
         // Creer puis empiler la racine :
         TreeNode node = new TreeNode(variables, 0);
@@ -21,7 +21,7 @@ public class DFS extends Recherche{
         int [] tempVariables = variables.clone();
         TreeNode tempNode;
 
-        while (!stack.isEmpty() && !sat) {
+        while (!stack.isEmpty() && sat!=variableLength) {
             node = stack.pop();     // depiler la tete de pile
 
             if((System.nanoTime()-start)/1000000000>=maxTime){
@@ -31,10 +31,10 @@ public class DFS extends Recherche{
             }
 
             tempVariables = node.variables.clone();
-            sat = testAveugle(tempVariables);
+            sat = testAstar(tempVariables);
             prof = node.profondeur ;
 
-            if ((prof < profondeur) && (!sat)) {
+            if ((prof < profondeur) && (sat!=variableLength)) {
                 // Si la profondeur n'est pas atteinte, on empile le fils droit puis le fils gauche.
 
                 // Creer le fils droit du noeud courant puis l'empiler
@@ -51,7 +51,7 @@ public class DFS extends Recherche{
             }
         }
 
-        if (sat){
+        if (sat==variableLength){
             System.out.println("Solution trouvée ! Cette base est satisfiable\n");
             System.out.println("Solution : ");
             printArray(tempVariables);

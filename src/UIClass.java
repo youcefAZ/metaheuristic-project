@@ -445,7 +445,7 @@ public class UIClass{
                 for(int i=0;i<returnC.vars.length;i++){
                     listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
                 }
-                resultB.setText("Inferation : "+returnC.satisfied);
+                resultB.setText("Satisfiability : "+returnC.satisfied);
             }
             else {
                 resultB.setText("BFS Couldnt find variables\n to infer CNF ");
@@ -458,7 +458,7 @@ public class UIClass{
                 for(int i=0;i<returnC.vars.length;i++){
                     listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
                 }
-                resultD.setText("Inferation : "+returnC.satisfied);
+                resultD.setText("Satisfiability : "+returnC.satisfied);
             }
             else {
                 resultD.setText("DFS Couldnt find variables\n to infer CNF ");
@@ -471,7 +471,7 @@ public class UIClass{
                 for(int i=0;i<returnC.vars.length;i++){
                     listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
                 }
-                resultA.setText("Inferation : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
+                resultA.setText("Satisfiability : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
             }
             else {
                 resultA.setText("BFS Couldnt find variables\n to infer CNF ");

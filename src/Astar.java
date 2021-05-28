@@ -156,8 +156,8 @@ public class Astar extends Recherche{
         }
         int max=min;
         //returns highest scoring and unused var
-        for(int i=0;i<variableLength;i++){
-            if(heuristicArrayTD[i]>= heuristicArrayTD[max] && usageArray[i]==0){
+        for(int i=0;i<heuristicArrayTD.length;i++){
+            if(heuristicArrayTD[i]>= heuristicArrayTD[max] && usageArray[i%variableLength]==0){
                 max=i;
             }
         }

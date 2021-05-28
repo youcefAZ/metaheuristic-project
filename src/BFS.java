@@ -30,11 +30,11 @@ public class BFS extends Recherche{
     //bool1 represente si on trouve une solution, et bool2 si on est arrivé a la profondeur max donnée.
     ReturnClass rechercheEnLargeur() {
         Long start= System.nanoTime();
-        Boolean bool=false,bool2=false;
+        int bool=0;Boolean bool2=false;
         TreeNode node=new TreeNode(variables,0);  //Creating the first node of -1.
         Queue<TreeNode> queue = new LinkedList<TreeNode>();       //Queue will give us the order of breadth first
         queue.add(node);
-        while (!queue.isEmpty() && bool==false && bool2==false)
+        while (!queue.isEmpty() && bool!=nbC && bool2==false)
         {
 
             // poll() removes the present head.
@@ -51,8 +51,8 @@ public class BFS extends Recherche{
             }
             else
             {
-                bool=testAveugle(tempNode.variables);   //testing if current node is satisfiable
-                if(bool==true){
+                bool=testAstar(tempNode.variables);   //testing if current node is satisfiable
+                if(bool==nbC){
                     System.out.println("Solution trouvée! :");
                     printArray(tempNode.variables);
                     ReturnClass returnClass= new ReturnClass(tempNode.variables,true);

@@ -179,8 +179,8 @@ public class UIClass{
 
         VBox box2A= new VBox();box2A.setSpacing(20);
 
-        box2A.getChildren().addAll(new Label("Complexité temporelle : O()"),
-                new Label("Complexité spatiale : O()"),
+        box2A.getChildren().addAll(new Label("Complexité temporelle pire cas: O(b^d)"),
+                new Label("Complexité spatiale pire cas: O(b^d)"),
                 new Label("Current variables : "),listViewA);
 
         VBox box3A= new VBox();box3A.setSpacing(20);

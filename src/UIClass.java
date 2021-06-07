@@ -27,42 +27,56 @@ public class UIClass{
     //Creating all the variables for all the UI panels
     Scene mainScene;
     TabPane tabPane = new TabPane();
-    FileChooser fileChooser = new FileChooser();
-    FileChooser fileChooser2= new FileChooser();
-    FileChooser fileChooser3= new FileChooser();
+    FileChooser fileChooser;
+    FileChooser fileChooser2;
+    FileChooser fileChooser3;
+    FileChooser fileChooser4;
+    FileChooser fileChooser5;
+
     Button buttonFileBfs= new Button("Choose");
     TextField textFBfs= new TextField();
     TextField profB= new TextField();
     Button launchB= new Button("Launch");
+
     Button buttonFileDfs= new Button("Choose");
     TextField textFDfs= new TextField();
     TextField profD= new TextField();
     Button launchD= new Button("Launch");
+
     Button buttonFileAs = new Button("Choose");
     TextField textFAs= new TextField();
     ComboBox comboAs= new ComboBox();
     Button launchA= new Button("Launch");
-    TableView<Variable> tableViewB = new TableView();
-    TableColumn column1B = new TableColumn<>("Premier x");
-    TableColumn column2B = new TableColumn<>("Deuxiéme x");
-    TableColumn column3B = new TableColumn<>("Troisiéme x");
-    TableView<Variable> tableViewD = new TableView();
-    TableColumn column1D = new TableColumn<>("Premier x");
-    TableColumn column2D = new TableColumn<>("Deuxiéme x");
-    TableColumn column3D = new TableColumn<>("Troisiéme x");
-    TableView<Variable> tableViewA = new TableView();
-    TableColumn column1A = new TableColumn<>("Premier x");
-    TableColumn column2A = new TableColumn<>("Deuxiéme x");
-    TableColumn column3A = new TableColumn<>("Troisiéme x");
+
+    Button buttonFilePfs= new Button("Choose");
+    TextField textFPfs= new TextField();
+    TextField nbPar= new TextField();
+    TextField nbIter= new TextField();
+    TextField vmaxField= new TextField();
+    TextField vStartField= new TextField();
+    TextField wField= new TextField();
+    TextField c1Field= new TextField();
+    TextField c2Field= new TextField();
+    Button launchP = new Button("Launch");
+
+    TableView<Variable> tableViewB;
+    TableView<Variable> tableViewD;
+    TableView<Variable> tableViewA;
+    TableView<Variable> tableViewP;
+
     ListView listViewB = new ListView();
     ListView listViewD = new ListView();
     ListView listViewA = new ListView();
+    ListView listViewP= new ListView();
+
     Label resultB= new Label("");
     Label resultD= new Label("");
     Label resultA= new Label("");
+    Label resultP= new Label("");
     Label elapsedB= new Label("");
     Label elapsedD= new Label("");
     Label elapsedA= new Label("");
+    Label elapsedP= new Label("");
     Label maxTimeB= new Label("Max time : (s)");
     Label maxTimeD= new Label("Max time : (s)");
     Label maxTimeA= new Label("Max time : (s)");
@@ -82,41 +96,23 @@ public class UIClass{
 
     public UIClass(Stage primaryStage){
 
-        fileChooser.setTitle("Choose CNF File");
-        //fileChooser.setInitialDirectory(new File("cnfs"));
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("CNF Files", "*.cnf"));
+        fileChooser=setFileChooser();
+        fileChooser2=setFileChooser();
+        fileChooser3=setFileChooser();
+        fileChooser4=setFileChooser();
+        fileChooser5=setFileChooser();
 
-        fileChooser2.setTitle("Choose CNF File");
-        //fileChooser2.setInitialDirectory(new File("cnfs"));
-        fileChooser2.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("CNF Files", "*.cnf"));
-
-        fileChooser3.setTitle("Choose CNF File");
-        //fileChooser3.setInitialDirectory(new File("cnfs"));
-        fileChooser3.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("CNF Files", "*.cnf"));
-
-        textFDfs.setEditable(false);textFBfs.setEditable(false);textFAs.setEditable(false);
-        tableViewB.setMaxSize(300,180);tableViewD.setMaxSize(300,180);
-        tableViewA.setMaxSize(300,180);
-
-        column1B.setMinWidth(100);
-        column2B.setMinWidth(100);
-        column3B.setMinWidth(100);
-
-        column1D.setMinWidth(100);
-        column2D.setMinWidth(100);
-        column3D.setMinWidth(100);
-
-        column1A.setMinWidth(100);
-        column2A.setMinWidth(100);
-        column3A.setMinWidth(100);
-
-        listViewB.setMaxHeight(265);listViewD.setMaxHeight(265);listViewA.setMaxHeight(265);
+        textFDfs.setEditable(false);textFBfs.setEditable(false);
+        textFAs.setEditable(false);textFPfs.setEditable(false);
 
 
-        //Creating BFS tab
+        listViewB.setMaxHeight(265);listViewD.setMaxHeight(265);
+        listViewA.setMaxHeight(265);listViewA.setMaxHeight(265);
+        listViewD.setId("D");listViewB.setId("B");
+        listViewA.setId("A");listViewP.setId("P");
+
+
+        //BFS 1st part
         GridPane gridBfs= new GridPane();gridBfs.setHgap(25);gridBfs.setVgap(25);
 
         HBox hBoxFBfs= new HBox();hBoxFBfs.getChildren().addAll(textFBfs,buttonFileBfs);
@@ -129,8 +125,9 @@ public class UIClass{
         gridBfs.add(testMaxTimeB,1,2);
         gridBfs.add(launchB,1,3);
 
-        GridPane gridAs= new GridPane();gridAs.setHgap(25);gridAs.setVgap(25);
 
+        //A-star 1st part
+        GridPane gridAs= new GridPane();gridAs.setHgap(25);gridAs.setVgap(25);
         HBox hBoxFAs= new HBox();hBoxFAs.getChildren().addAll(textFAs, buttonFileAs);
 
         gridAs.add(new Label("Data : "),0,0);
@@ -141,23 +138,32 @@ public class UIClass{
         gridAs.add(testMaxTimeA,1,2);
         gridAs.add(launchA,1,3);
 
-        column1B.setCellValueFactory(new PropertyValueFactory<Variable,String>("x1"));
-        column2B.setCellValueFactory(new PropertyValueFactory<Variable,String>("x2"));
-        column3B.setCellValueFactory(new PropertyValueFactory<Variable,String>("x3"));
+        //PSO 1st part
+        GridPane gridPs= new GridPane();gridPs.setHgap(25);gridPs.setVgap(25);
 
-        column1D.setCellValueFactory(new PropertyValueFactory<Variable,String>("x1"));
-        column2D.setCellValueFactory(new PropertyValueFactory<Variable,String>("x2"));
-        column3D.setCellValueFactory(new PropertyValueFactory<Variable,String>("x3"));
+        HBox hBoxFPs= new HBox();hBoxFPs.getChildren().addAll(textFPfs, buttonFilePfs);
+        HBox hBoxDP= new HBox();hBoxDP.getChildren().addAll(new Label("Data : "),hBoxFPs);
+        HBox hBoxIterPs= new HBox();hBoxIterPs.getChildren().addAll(new Label("nbIter:"), nbIter);
+        HBox hBoxParPs= new HBox();hBoxParPs.getChildren().addAll(new Label("nbP :"), nbPar);
+        HBox hBoxVPs= new HBox();hBoxVPs.getChildren().addAll(new Label("Vmax :"), vmaxField);
+        HBox hBoxWPs= new HBox();hBoxWPs.getChildren().addAll(new Label("w :   "), wField);
+        HBox hBoxC1Ps= new HBox();hBoxC1Ps.getChildren().addAll(new Label("c1 :     "), c1Field);
+        HBox hBoxC2Ps= new HBox();hBoxC2Ps.getChildren().addAll(new Label("c2 :  "), c2Field);
 
-        column1A.setCellValueFactory(new PropertyValueFactory<Variable,String>("x1"));
-        column2A.setCellValueFactory(new PropertyValueFactory<Variable,String>("x2"));
-        column3A.setCellValueFactory(new PropertyValueFactory<Variable,String>("x3"));
+        gridPs.add(hBoxDP,0,0);
+        gridPs.add(hBoxIterPs,0,1);
+        gridPs.add(hBoxParPs,1,1);
+        gridPs.add(hBoxVPs,0,2);
+        gridPs.add(hBoxWPs,1,2);
+        gridPs.add(hBoxC1Ps,0,3);
+        gridPs.add(hBoxC2Ps,1,3);
+        gridPs.add(launchP,0,4);
 
 
-        tableViewB.getColumns().addAll(column1B,column2B,column3B);
-        tableViewD.getColumns().addAll(column1D,column2D,column3D);
-        tableViewA.getColumns().addAll(column1A,column2A,column3A);
+        tableViewB=setTableView();tableViewD=setTableView();
+        tableViewA=setTableView(); tableViewP=setTableView();
 
+        //BFS 2nd PART
         VBox vbfs= new VBox();vbfs.setSpacing(20);
         vbfs.getChildren().addAll(gridBfs,tableViewB);
 
@@ -174,6 +180,7 @@ public class UIClass{
         hbfs.getChildren().addAll(vbfs,box2,box3);
 
 
+        //Astar 2nd part
         VBox vAs= new VBox();vAs.setSpacing(20);
         vAs.getChildren().addAll(gridAs,tableViewA);
 
@@ -189,6 +196,22 @@ public class UIClass{
         HBox hAs= new HBox();hAs.setSpacing(30);hAs.setPadding(new Insets(25,0,0,25));
         hAs.getChildren().addAll(vAs,box2A,box3A);
 
+
+        //PSO 2nd part
+        VBox vPs= new VBox();vPs.setSpacing(20);
+        vPs.getChildren().addAll(gridPs,tableViewP);
+
+        VBox box2P= new VBox();box2P.setSpacing(20);
+
+        box2P.getChildren().addAll(new Label("Complexité temporelle :"),
+                new Label("Complexité spatiale:"),
+                new Label("Current variables : "),listViewP);
+
+        VBox box3P= new VBox();box3P.setSpacing(20);
+        box3P.getChildren().addAll(new Label("Result : "),elapsedP, resultP);
+
+        HBox hPs= new HBox();hPs.setSpacing(30);hPs.setPadding(new Insets(25,0,0,25));
+        hPs.getChildren().addAll(vPs,box2P,box3P);
 
 
         //Creating DFS tab
@@ -220,70 +243,22 @@ public class UIClass{
         HBox hdfs= new HBox();hdfs.setSpacing(30);hdfs.setPadding(new Insets(25,0,0,25));
         hdfs.getChildren().addAll(vdfs,box2D,box3D);
 
-        listViewD.setId("D");listViewB.setId("B");listViewA.setId("A");
 
-
-        //creating Astar tab
         comboAs.setItems(heuristics);
 
 
-        profB.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    profB.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
+        numberOnly(profB);
+        numberOnly(profD);
+        numberOnly(testMaxTimeB);
+        numberOnly(testMaxTimeD);
+        numberOnly(testMaxTimeA);
+        numberOnly(nbIter);numberOnly(nbPar);
+        numberOnly(vmaxField);
 
-        profD.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    profD.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-
-        testMaxTimeB.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    testMaxTimeB.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-
-        testMaxTimeD.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    testMaxTimeD.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-
-
-        testMaxTimeA.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    testMaxTimeA.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
 
 
         launchB.setOnAction(e->{
-            try{
-                dataList= fileToArraylist(textFBfs.getText());
-                String[] parameters= dataList.get(7).split(" ");
-                data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
+                setupAction();
                 BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
                         Integer.parseInt(profB.getText()),Integer.parseInt(testMaxTimeB.getText()));
                 long start = System.nanoTime();
@@ -291,10 +266,6 @@ public class UIClass{
                 long end = System.nanoTime();
                 float elapsedTime = (float) (end - start)/1000000000;
                 updateList(listViewB,result,elapsedTime);
-            }catch (Exception f){
-                System.out.println("ohwell, "+f);
-            }
-
 
         });
 
@@ -309,11 +280,8 @@ public class UIClass{
 
 
         launchD.setOnAction(e->{
-            try{
                 System.out.println("Executing DFS");
-                ArrayList<String> dataList= fileToArraylist(textFDfs.getText());
-                String[] parameters= dataList.get(7).split(" ");
-                String[][] data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
+                setupAction();
                 DFS dfs= new DFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
                         Integer.parseInt(profD.getText()),Integer.parseInt(testMaxTimeD.getText()));
                 long start = System.nanoTime();
@@ -321,10 +289,6 @@ public class UIClass{
                 long end = System.nanoTime();
                 float elapsedTime = (float) (end - start)/1000000000;
                 updateList(listViewD,DFSResult,elapsedTime);
-
-            }catch (Exception f){
-                System.out.println("ohwell, "+f);
-            }
         });
 
         buttonFileDfs.setOnAction(e ->{
@@ -338,11 +302,7 @@ public class UIClass{
 
         launchA.setOnAction(e->{
             System.out.println("Executing A star");
-            try {
-                dataList= fileToArraylist(textFAs.getText());
-                String[] parameters= dataList.get(7).split(" ");
-                data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
-
+                setupAction();
                 Astar astar= new Astar(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
                         comboAs.getValue().toString(),Integer.parseInt(testMaxTimeA.getText()));
 
@@ -351,12 +311,34 @@ public class UIClass{
                 long end = System.nanoTime();
                 float elapsedTime = (float) (end - start)/1000000000;
                 updateList(listViewA,AstarRes,elapsedTime);
-            }catch ( Exception f){
-                System.out.println(f);
-            }
+
         });
 
         buttonFileAs.setOnAction(e ->{
+            try {
+                File selectedFile = fileChooser.showOpenDialog(primaryStage);
+                updateTab(selectedFile.getPath());
+            }catch (Exception c){
+                System.out.println(c);
+            }
+        });
+
+        launchP.setOnAction(e->{
+            setupAction();
+            PSO pso= new PSO(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
+                    Integer.parseInt(nbPar.getText()),Integer.parseInt(nbIter.getText()),
+                    Integer.parseInt(vmaxField.getText()),Float.parseFloat(c1Field.getText()),
+                    Float.parseFloat(c2Field.getText()),Float.parseFloat(wField.getText()));
+
+            long start = System.nanoTime();
+            ReturnClass AstarRes=pso.psoAlgorithm();
+            long end = System.nanoTime();
+            float elapsedTime = (float) (end - start)/1000000000;
+            updateList(listViewP,AstarRes,elapsedTime);
+
+        });
+
+        buttonFilePfs.setOnAction(e ->{
             try {
                 File selectedFile = fileChooser.showOpenDialog(primaryStage);
                 updateTab(selectedFile.getPath());
@@ -370,8 +352,10 @@ public class UIClass{
         Tab tab1 = new Tab("BFS", hbfs);
         Tab tab2 = new Tab("DFS"  ,hdfs );
         Tab tab3 = new Tab("A-star" , hAs);
+        Tab tab4= new Tab("PSO",hPs);
+        Tab tab5= new Tab("Genetic Algorithm", new Label("GA"));
         tabPane.setTabMinWidth(100);
-        tabPane.getTabs().addAll(tab1,tab2,tab3);
+        tabPane.getTabs().addAll(tab1,tab2,tab3,tab4,tab5);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         VBox vBox = new VBox(tabPane);
 
@@ -384,10 +368,23 @@ public class UIClass{
 
     }
 
+    public void setupAction(){
+        try {
+            dataList= fileToArraylist(textFAs.getText());
+            parameters= dataList.get(7).split(" ");
+            data=listToMatrix(dataList,Integer.parseInt(parameters[4]));
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
+    }
+
+
     public void updateTab(String path){
         textFBfs.setText(path);
         textFDfs.setText(path);
         textFAs.setText(path);
+        textFPfs.setText(path);
 
         try{
             dataList= fileToArraylist(textFBfs.getText());
@@ -397,9 +394,42 @@ public class UIClass{
             tableViewB.setItems(arrayToOBS(data));
             tableViewD.setItems(arrayToOBS(data));
             tableViewA.setItems(arrayToOBS(data));
+            tableViewP.setItems(arrayToOBS(data));
         }catch (Exception e){
             System.out.println("You didnt select a file");
         }
+    }
+
+
+    public FileChooser setFileChooser(){
+        FileChooser fileChooser= new FileChooser();
+        fileChooser.setTitle("Choose CNF File");
+        //fileChooser.setInitialDirectory(new File("cnfs"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("CNF Files", "*.cnf"));
+
+        return  fileChooser;
+    }
+
+    public TableView setTableView(){
+
+        TableView tableView= new TableView();
+        tableView.setMaxSize(300,180);
+
+        TableColumn column1= new TableColumn("Premier x");
+        TableColumn column2= new TableColumn("Deuxiéme x");
+        TableColumn column3= new TableColumn("Troisiéme x");
+        column1.setMinWidth(100);
+        column2.setMinWidth(100);
+        column3.setMinWidth(100);
+
+        column1.setCellValueFactory(new PropertyValueFactory<Variable,String>("x1"));
+        column2.setCellValueFactory(new PropertyValueFactory<Variable,String>("x2"));
+        column3.setCellValueFactory(new PropertyValueFactory<Variable,String>("x3"));
+
+        tableView.getColumns().addAll(column1,column2,column3);
+
+        return tableView;
     }
 
 
@@ -478,8 +508,8 @@ public class UIClass{
             }
         }
 
-
     }
+
 
     public void initLists(int length){
         listViewB.getItems().remove(0,listViewD.getItems().size());
@@ -493,6 +523,17 @@ public class UIClass{
             listViewD.getItems().add("X"+i+": "+variables[i]);
             listViewA.getItems().add("X"+i+": "+variables[i]);
         }
+    }
+
+    public void numberOnly(TextField textf){
+        textf.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    textf.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
 

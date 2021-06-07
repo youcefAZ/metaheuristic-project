@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Recherche {
     String[][] data;
     int[] variables;
@@ -15,7 +17,13 @@ public class Recherche {
         }
         this.nbC=nbC;
     }
-    
+
+    public Recherche(String[][] data,int variableLength, int nbC) {
+        this.data = data;
+        this.nbC = nbC;
+        this.variableLength = variableLength;
+    }
+
     public int testAstar(int[] variables){
         int nb_clausesSat = 0;  //Nombre de clauses satisfiables
         boolean clauseSat;
@@ -68,6 +76,15 @@ public class Recherche {
             i++;
         }
         return bool;
+    }
+
+    public int[] randomParticule(){
+        Random rand= new Random();
+        int[] random= new int[variableLength];
+        for (int i = 0; i < variableLength; i++) {
+            random[i]=rand.nextInt(2);
+        }
+        return random;
     }
 
 

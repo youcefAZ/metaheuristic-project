@@ -28,10 +28,6 @@ public class UIClass{
     Scene mainScene;
     TabPane tabPane = new TabPane();
     FileChooser fileChooser;
-    FileChooser fileChooser2;
-    FileChooser fileChooser3;
-    FileChooser fileChooser4;
-    FileChooser fileChooser5;
 
     Button buttonFileBfs= new Button("Choose");
     TextField textFBfs= new TextField();
@@ -53,30 +49,43 @@ public class UIClass{
     TextField nbPar= new TextField();
     TextField nbIter= new TextField();
     TextField vmaxField= new TextField();
-    TextField vStartField= new TextField();
     TextField wField= new TextField();
     TextField c1Field= new TextField();
     TextField c2Field= new TextField();
     Button launchP = new Button("Launch");
 
+    Button buttonFileGfs= new Button("Choose");
+    TextField textFGfs= new TextField();
+    TextField nbGen= new TextField();
+    TextField nbPop= new TextField();
+    TextField crossRate= new TextField();
+    TextField mutRate= new TextField();
+    Button launchG = new Button("Launch");
+
+
+
     TableView<Variable> tableViewB;
     TableView<Variable> tableViewD;
     TableView<Variable> tableViewA;
     TableView<Variable> tableViewP;
+    TableView<Variable> tableViewG;
 
     ListView listViewB = new ListView();
     ListView listViewD = new ListView();
     ListView listViewA = new ListView();
     ListView listViewP= new ListView();
+    ListView listViewG= new ListView();
 
     Label resultB= new Label("");
     Label resultD= new Label("");
     Label resultA= new Label("");
     Label resultP= new Label("");
+    Label resultG= new Label("");
     Label elapsedB= new Label("");
     Label elapsedD= new Label("");
     Label elapsedA= new Label("");
     Label elapsedP= new Label("");
+    Label elapsedG= new Label("");
     Label maxTimeB= new Label("Max time : (s)");
     Label maxTimeD= new Label("Max time : (s)");
     Label maxTimeA= new Label("Max time : (s)");
@@ -97,19 +106,15 @@ public class UIClass{
     public UIClass(Stage primaryStage){
 
         fileChooser=setFileChooser();
-        fileChooser2=setFileChooser();
-        fileChooser3=setFileChooser();
-        fileChooser4=setFileChooser();
-        fileChooser5=setFileChooser();
 
         textFDfs.setEditable(false);textFBfs.setEditable(false);
-        textFAs.setEditable(false);textFPfs.setEditable(false);
+        textFAs.setEditable(false);textFPfs.setEditable(false);textFGfs.setEditable(false);
 
 
         listViewB.setMaxHeight(265);listViewD.setMaxHeight(265);
-        listViewA.setMaxHeight(265);listViewA.setMaxHeight(265);
+        listViewA.setMaxHeight(265);listViewA.setMaxHeight(265);listViewG.setMaxHeight(265);
         listViewD.setId("D");listViewB.setId("B");
-        listViewA.setId("A");listViewP.setId("P");
+        listViewA.setId("A");listViewP.setId("P");listViewG.setId("G");
 
 
         //BFS 1st part
@@ -160,8 +165,26 @@ public class UIClass{
         gridPs.add(launchP,0,4);
 
 
+        //GA 1st part
+        GridPane gridGs= new GridPane();gridGs.setHgap(25);gridGs.setVgap(25);
+        HBox hBoxFGs= new HBox();hBoxFGs.getChildren().addAll(textFGfs, buttonFileGfs);
+
+        gridGs.add(new Label("Data : "),0,0);
+        gridGs.add(hBoxFGs,1,0);
+        gridGs.add(new Label("nb population : "),0,1);
+        gridGs.add(nbPop,1,1);
+        gridGs.add(new Label("nb Gen : "),0,2);
+        gridGs.add(nbGen,1,2);
+        gridGs.add(new Label("cross-rate:"),0,3);
+        gridGs.add(crossRate,1,3);
+        gridGs.add(new Label("mut-rate:"),0,4);
+        gridGs.add(mutRate,1,4);
+        gridGs.add(launchG,1,5);
+
+
         tableViewB=setTableView();tableViewD=setTableView();
-        tableViewA=setTableView(); tableViewP=setTableView();
+        tableViewA=setTableView(); tableViewP=setTableView();tableViewG=setTableView();
+
 
         //BFS 2nd PART
         VBox vbfs= new VBox();vbfs.setSpacing(20);
@@ -213,6 +236,22 @@ public class UIClass{
         HBox hPs= new HBox();hPs.setSpacing(30);hPs.setPadding(new Insets(25,0,0,25));
         hPs.getChildren().addAll(vPs,box2P,box3P);
 
+        //GA 2nd part
+        VBox vGs= new VBox();vGs.setSpacing(20);
+        vGs.getChildren().addAll(gridGs,tableViewG);
+
+        VBox box2G= new VBox();box2G.setSpacing(20);
+
+        box2G.getChildren().addAll(new Label("Complexité temporelle :"),
+                new Label("Complexité spatiale:"),
+                new Label("Current variables : "),listViewG);
+
+        VBox box3G= new VBox();box3G.setSpacing(20);
+        box3G.getChildren().addAll(new Label("Result : "),elapsedG, resultG);
+
+        HBox hGs= new HBox();hGs.setSpacing(30);hGs.setPadding(new Insets(25,0,0,25));
+        hGs.getChildren().addAll(vGs,box2G,box3G);
+
 
         //Creating DFS tab
         GridPane gdfs= new GridPane();gdfs.setVgap(25);gdfs.setHgap(25);
@@ -254,9 +293,11 @@ public class UIClass{
         numberOnly(testMaxTimeA);
         numberOnly(nbIter);numberOnly(nbPar);
         numberOnly(vmaxField);
+        numberOnly(nbGen);numberOnly(nbGen);
 
 
 
+        //setting up the actions for all buttons
         launchB.setOnAction(e->{
                 setupAction();
                 BFS bfs= new BFS(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
@@ -348,12 +389,32 @@ public class UIClass{
         });
 
 
+        launchG.setOnAction(e->{
+            setupAction();
+            //use the algorithm here, its gonna be something like this :
+            //Ga ga= new Ga(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
+            // Integer.parseInt(nbGen.getText),Integer.parseInt(nbPop.getText),Integer.parseInt(crossRate.getText),
+            // Integer.parseInt(mutRate.getText));
+            //ga.algo();
+        });
+
+
+        buttonFileGfs.setOnAction(e ->{
+            try {
+                File selectedFile = fileChooser.showOpenDialog(primaryStage);
+                updateTab(selectedFile.getPath());
+            }catch (Exception c){
+                System.out.println(c);
+            }
+        });
+
+
         //Linking  the panels with their tabs
         Tab tab1 = new Tab("BFS", hbfs);
         Tab tab2 = new Tab("DFS"  ,hdfs );
         Tab tab3 = new Tab("A-star" , hAs);
         Tab tab4= new Tab("PSO",hPs);
-        Tab tab5= new Tab("Genetic Algorithm", new Label("GA"));
+        Tab tab5= new Tab("Genetic Algorithm", hGs);
         tabPane.setTabMinWidth(100);
         tabPane.getTabs().addAll(tab1,tab2,tab3,tab4,tab5);
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -367,6 +428,8 @@ public class UIClass{
         primaryStage.show();
 
     }
+
+
 
     public void setupAction(){
         try {
@@ -395,6 +458,7 @@ public class UIClass{
             tableViewD.setItems(arrayToOBS(data));
             tableViewA.setItems(arrayToOBS(data));
             tableViewP.setItems(arrayToOBS(data));
+            tableViewG.setItems(arrayToOBS(data));
         }catch (Exception e){
             System.out.println("You didnt select a file");
         }

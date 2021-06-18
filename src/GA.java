@@ -2,11 +2,11 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.LinkedList;
 
-public class GA extends Recherche {
+public class GA extends Recherche{
 
     int nbIndividuals, nbGenerations;
-    float mutationRate, crossoverRate;
-    LinkedList<individual> population = new LinkedList<>();
+    float mutationRate, crossoverRate ;
+    LinkedList<individual> population  = new LinkedList<>();
 
     public GA(String[][] data, int variableLength, int nbC, int nbIndividuals, int nbGenerations, float mutationRate, float crossoverRate) {
         super(data, variableLength, nbC);
@@ -16,28 +16,29 @@ public class GA extends Recherche {
         this.crossoverRate = crossoverRate;     // taux de crossover
     }
 
-    public ReturnClass GeneticAlgorithm() {
+    //public ReturnClass GeneticAlgorithm (){
+    public ReturnClass GeneticAlgorithm (){
 
         //Générer une population de façon aléatoire
         int generation = 1;
-        for (int i = 0; i < nbIndividuals; i++) {
+        for (int i=0; i<nbIndividuals; i++){
             individual individu = new individual(variableLength);
             individu.InitialiseIndividual(generation);
             individu.fitness = testAstar(individu.variable);
             addToPopulation(population, individu);
         }
 
-        /**/
         System.out.println("\n--------------------------------------------------------------------");
         System.out.println("Meilleur individu à l'iterratio 1 :");
-        System.out.println("fitness x1 = " + population.get(0).fitness + ", Generation : " + population.get(0).generation);
+        System.out.println("fitness x1 = "+ population.get(0).fitness+ ", Generation : "+ population.get(0).generation);
 
-        LinkedList<individual> UpdatePopulation = new LinkedList<individual>();
         int nbParents = percentageToNumber(crossoverRate, nbIndividuals);
 
         while (generation < nbGenerations) {
-
             //Selection des parents puis croisement entre parents pour générer des offsprings (children)
+
+            LinkedList<individual> UpdatePopulation = new LinkedList<individual>();
+
             for (int i = 0; i < nbParents; i++) {
                 individual parent1 = population.get(i);
                 individual parent2 = population.get(i + 1);
@@ -71,35 +72,59 @@ public class GA extends Recherche {
             population = UpdatePopulation;
             generation = generation + 1;
 
-            /**/
             System.out.println("\n--------------------------------------------------------------------");
-            System.out.println("Meilleur individu à l'iterratio " + generation + " :");
-            System.out.println("fitness = " + population.get(0).fitness + ", Generation : " + population.get(0).generation);
+            System.out.println("Meilleur individu à l'iterratio "+ generation +" :");
+            System.out.println("fitness = "+ population.get(0).fitness+ ", Generation : "+ population.get(0).generation);
 
         }
 
         boolean satisfied = testAveugle(population.get(0).variable);
         ReturnClass returnClass = new ReturnClass(population.get(0).variable, population.get(0).fitness, satisfied);
-
+        returnClass.gen=population.get(0).generation;
         return returnClass;
+        //return population ;
     }
 
-    private ArrayList<individual> crossover(individual parent1, individual parent2) {
-        int[] p1 = parent1.variable;
-        int[] p2 = parent2.variable;
+    //Convertir un pourcentage en nombre d'individus
+    private int percentageToNumber(float rate, int nb){
+        int intRate = Math.round(((rate * nb)/100));
+        if (intRate % 2 != 0) {
+            intRate = intRate + 1;
+        }
+        return intRate;
+    }
+
+    //ajouter un individu à la population en assurant un ordre décroissant selon la valeur de fitness function
+    private void addToPopulation(LinkedList<individual> NewPopulation, individual individu){
+        boolean bool=false;
+        int i=0;
+        while(i<NewPopulation.size() && !bool){
+            if((NewPopulation.get(i)).fitness < individu.fitness){
+                bool=true;
+            }
+            else {
+                i++;
+            }
+        }
+        NewPopulation.add(i,individu);
+    }
+
+    private ArrayList<individual> crossover (individual parent1, individual parent2){
+        int [] p1 = parent1.variable;
+        int [] p2 = parent2.variable;
 
         ArrayList<individual> Children = new ArrayList<individual>();
-        int crossoverPoint = (int) Math.round(p1.length / 2);
+        int crossoverPoint = (int) Math.round(p1.length/2) ;
         //System.out.println("crossoverPoint = " + crossoverPoint);
 
-        int[] ch1 = new int[p1.length];
-        int[] ch2 = new int[p1.length];
+        int [] ch1 = new int[p1.length];
+        int [] ch2 = new int[p1.length];
 
-        for (int i = 0; i < crossoverPoint; i++) {
+        for (int i = 0; i<crossoverPoint; i++){
             ch1[i] = p1[i];
             ch2[i] = p2[i];
         }
-        for (int i = crossoverPoint; i < p1.length; i++) {
+        for (int i = crossoverPoint; i<p1.length; i++){
             ch1[i] = p2[i];
             ch2[i] = p1[i];
         }
@@ -116,15 +141,17 @@ public class GA extends Recherche {
         return Children;
     }
 
-    private individual mutation(int mutationRate, individual individu) {
+
+    private individual mutation (int mutationRate, individual individu) {
         individual newIndividu = new individual(individu.variableLength);
-        Random random = new Random();
-        int[] newVar = individu.variable;
-        if (random.nextInt(100) <= mutationRate) {
+        Random random= new Random();
+        int [] newVar = individu.variable;
+        if(random.nextInt(100)<=mutationRate){
             int j = random.nextInt(newVar.length);  // indice du gène à muter, généré aléatoirement.
-            if (newVar[j] == 1) {
+            if (newVar[j] == 1){
                 newVar[j] = 0;
-            } else if (newVar[j] == 0) {
+            }
+            else if (newVar[j] == 0){
                 newVar[j] = 1;
             }
         }
@@ -134,30 +161,4 @@ public class GA extends Recherche {
         return newIndividu;
 
     }
-
-    //ajouter un individu à la population en assurant un ordre décroissant selon la valeur de fitness function
-    private void addToPopulation(LinkedList<individual> NewPopulation, individual individu) {
-        boolean bool = false;
-        int i = 0;
-        while (i < NewPopulation.size() && !bool) {
-            if ((NewPopulation.get(i)).fitness < individu.fitness) {
-                bool = true;
-            } else {
-                i++;
-            }
-        }
-        NewPopulation.add(i, individu);
-    }
-
-    //Convertir un pourcentage en nombre d'individus
-    private int percentageToNumber(float rate, int nb) {
-        int intRate = Math.round(((rate * nb) / 100));
-        if (intRate % 2 != 0) {
-            intRate = intRate + 1;
-        }
-        return intRate;
-    }
-
-
-
 }

@@ -451,6 +451,7 @@ public class UIClass{
         textFDfs.setText(path);
         textFAs.setText(path);
         textFPfs.setText(path);
+        textFGfs.setText(path);
 
         try{
             dataList= fileToArraylist(textFBfs.getText());
@@ -561,7 +562,7 @@ public class UIClass{
                 resultD.setText("Satisfiability : false");
             }
         }
-        else {
+        else if(listView.getId()==listViewA.getId()){
             elapsedA.setText("Elapsed time : "+elapsedTime+" s");
             if(returnC.vars!=null){
                 listView.getItems().remove(0,listView.getItems().size());
@@ -572,6 +573,32 @@ public class UIClass{
             }
             else {
                 resultA.setText("Satisfiability : false");
+            }
+        }
+        else if(listView.getId()==listViewP.getId()){
+            elapsedP.setText("Elapsed time : "+elapsedTime+" s");
+            if(returnC.vars!=null){
+                listView.getItems().remove(0,listView.getItems().size());
+                for(int i=0;i<returnC.vars.length;i++){
+                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
+                }
+                resultP.setText("Satisfiability : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
+            }
+            else {
+                resultP.setText("Satisfiability : false");
+            }
+        }
+        else {
+            elapsedG.setText("Elapsed time : "+elapsedTime+" s");
+            if(returnC.vars!=null){
+                listView.getItems().remove(0,listView.getItems().size());
+                for(int i=0;i<returnC.vars.length;i++){
+                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
+                }
+                resultG.setText("instance generation : "+returnC.gen+"\nSatisfiability : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
+            }
+            else {
+                resultG.setText("Satisfiability : false");
             }
         }
 

@@ -391,11 +391,15 @@ public class UIClass{
 
         launchG.setOnAction(e->{
             setupAction();
-            //use the algorithm here, its gonna be something like this :
-            //Ga ga= new Ga(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
-            // Integer.parseInt(nbGen.getText),Integer.parseInt(nbPop.getText),Integer.parseInt(crossRate.getText),
-            // Integer.parseInt(mutRate.getText));
-            //ga.algo();
+            GA ga= new GA(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
+            Integer.parseInt(nbPop.getText()),Integer.parseInt(nbGen.getText()), Integer.parseInt(mutRate.getText()),
+            Integer.parseInt(crossRate.getText()));
+            long start = System.nanoTime();
+            ReturnClass result = ga.GeneticAlgorithm();
+            long end = System.nanoTime();
+            float elapsedTime = (float) (end - start)/1000000000;
+            updateList(listViewG,result,elapsedTime);
+
         });
 
 

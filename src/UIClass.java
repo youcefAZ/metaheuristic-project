@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 
@@ -112,7 +113,7 @@ public class UIClass{
 
 
         listViewB.setMaxHeight(265);listViewD.setMaxHeight(265);
-        listViewA.setMaxHeight(265);listViewA.setMaxHeight(265);listViewG.setMaxHeight(265);
+        listViewA.setMaxHeight(265);listViewP.setMaxHeight(255);listViewG.setMaxHeight(265);
         listViewD.setId("D");listViewB.setId("B");
         listViewA.setId("A");listViewP.setId("P");listViewG.setId("G");
 
@@ -144,7 +145,7 @@ public class UIClass{
         gridAs.add(launchA,1,3);
 
         //PSO 1st part
-        GridPane gridPs= new GridPane();gridPs.setHgap(25);gridPs.setVgap(25);
+        GridPane gridPs= new GridPane();gridPs.setHgap(5);gridPs.setVgap(10);
 
         HBox hBoxFPs= new HBox();hBoxFPs.getChildren().addAll(textFPfs, buttonFilePfs);
         HBox hBoxDP= new HBox();hBoxDP.getChildren().addAll(new Label("Data : "),hBoxFPs);
@@ -166,7 +167,7 @@ public class UIClass{
 
 
         //GA 1st part
-        GridPane gridGs= new GridPane();gridGs.setHgap(25);gridGs.setVgap(25);
+        GridPane gridGs= new GridPane();gridGs.setHgap(25);gridGs.setVgap(5);
         HBox hBoxFGs= new HBox();hBoxFGs.getChildren().addAll(textFGfs, buttonFileGfs);
 
         gridGs.add(new Label("Data : "),0,0);
@@ -228,7 +229,7 @@ public class UIClass{
 
         box2P.getChildren().addAll(new Label("Complexité temporelle :"),
                 new Label("Complexité spatiale:"),
-                new Label("Current variables : "),listViewP);
+                new Label("Gbest : "),listViewP);
 
         VBox box3P= new VBox();box3P.setSpacing(20);
         box3P.getChildren().addAll(new Label("Result : "),elapsedP, resultP);
@@ -368,7 +369,7 @@ public class UIClass{
             setupAction();
             PSO pso= new PSO(data,Integer.parseInt(parameters[2]),Integer.parseInt(parameters[4]),
                     Integer.parseInt(nbPar.getText()),Integer.parseInt(nbIter.getText()),
-                    Integer.parseInt(vmaxField.getText()),Float.parseFloat(c1Field.getText()),
+                    new BigInteger(vmaxField.getText()),Float.parseFloat(c1Field.getText()),
                     Float.parseFloat(c2Field.getText()),Float.parseFloat(wField.getText()));
 
             long start = System.nanoTime();
@@ -426,7 +427,7 @@ public class UIClass{
 
 
 
-        mainScene=new Scene(vBox,825,450);
+        mainScene=new Scene(vBox,900,450);
         primaryStage.setTitle("Meta-heuristic project");
         primaryStage.setScene(mainScene);
         primaryStage.show();

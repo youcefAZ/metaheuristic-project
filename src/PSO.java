@@ -5,14 +5,15 @@ import java.util.Random;
 
 public class PSO extends Recherche{
 
-    int nbParticule,nbIteration,vmax;
+    int nbParticule,nbIteration;
+    BigInteger vmax;
     float c1,c2,w,r1,r2;
     ArrayList<Particule> particules= new ArrayList<Particule>();
     Particule[] pbest;
     Particule gbest;
 
     public PSO(String[][] data, int variableLength, int nbC, int nbParticule,
-               int nbIteration, int vmax, float c1, float c2, float w) {
+               int nbIteration, BigInteger vmax, float c1, float c2, float w) {
         super(data, variableLength, nbC);
         this.nbParticule = nbParticule;
         this.nbIteration = nbIteration;
@@ -81,21 +82,22 @@ public class PSO extends Recherche{
         Particule newPar;
         BigInteger currentPos=binaryToDecimal(particule.position);
         //calculate v(t+1)
-        BigInteger yo1=BigDecimal.valueOf(c1*r1).toBigInteger();
-        BigInteger yo2=BigDecimal.valueOf(c2*r2).toBigInteger();
-        BigInteger yo3=BigDecimal.valueOf(w).toBigInteger();
-        BigInteger v=particule.velocity.multiply(yo3).add ((binaryToDecimal(pbest[i].position)
-                .subtract(currentPos)).multiply(yo1)).add((binaryToDecimal(gbest.position)
-                .subtract(currentPos)).multiply(yo2));
+        BigDecimal yo1=BigDecimal.valueOf(1/(c1*r1));
+        BigDecimal yo2=BigDecimal.valueOf(1/(c2*r2));
+        BigDecimal yo3=BigDecimal.valueOf(1/w);
 
+        BigInteger v=(particule.velocity.divide(yo3.toBigInteger())).add ((binaryToDecimal(pbest[i].position)
+                .subtract(currentPos)).divide(yo1.toBigInteger())).add((binaryToDecimal(gbest.position)
+                .subtract(currentPos)).divide(yo2.toBigInteger()));
         initR();
+
         BigInteger truevmax=new BigInteger(String.valueOf(vmax));
         //verify if v is superior than vmax
         if(v.compareTo(truevmax) > 0){
             v=truevmax;
         }
-        if(v.compareTo(truevmax.multiply(new BigInteger("-1"))) < 0){
-            v=truevmax.multiply(new BigInteger("-1"));
+        if(v.compareTo(truevmax.negate()) < 0){
+            v=truevmax.negate();
         }
 
         //update particle position

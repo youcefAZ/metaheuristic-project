@@ -536,70 +536,35 @@ public class UIClass{
 
     public void updateList(ListView listView, ReturnClass returnC,float elapsedTime){
 
+        listView.getItems().remove(0,listView.getItems().size());
+        for(int i=0;i<returnC.vars.length;i++){
+            listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
+        }
+
         if(listView.getId()==listViewB.getId()){
             elapsedB.setText("Elapsed time : "+elapsedTime+" s");
-            if(returnC!=null){
-                listView.getItems().remove(0,listView.getItems().size());
-                for(int i=0;i<returnC.vars.length;i++){
-                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
-                }
-                resultB.setText("Satisfiability : "+returnC.satisfied);
-            }
-            else {
-                resultB.setText("Satisfiability : false");
-            }
+            resultB.setText("Satisfiability : "+returnC.satisfied);
         }
+
         else if(listView.getId()==listViewD.getId()){
             elapsedD.setText("Elapsed time : "+elapsedTime+" s");
-            if(returnC!=null){
-                listView.getItems().remove(0,listView.getItems().size());
-                for(int i=0;i<returnC.vars.length;i++){
-                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
-                }
-                resultD.setText("Satisfiability : "+returnC.satisfied);
-            }
-            else {
-                resultD.setText("Satisfiability : false");
-            }
+            resultD.setText("Satisfiability : "+returnC.satisfied);
         }
+
         else if(listView.getId()==listViewA.getId()){
             elapsedA.setText("Elapsed time : "+elapsedTime+" s");
-            if(returnC.vars!=null){
-                listView.getItems().remove(0,listView.getItems().size());
-                for(int i=0;i<returnC.vars.length;i++){
-                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
-                }
-                resultA.setText("Satisfiability : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
-            }
-            else {
-                resultA.setText("Satisfiability : false");
-            }
+            resultA.setText("Satisfiability : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
         }
+
         else if(listView.getId()==listViewP.getId()){
             elapsedP.setText("Elapsed time : "+elapsedTime+" s");
-            if(returnC.vars!=null){
-                listView.getItems().remove(0,listView.getItems().size());
-                for(int i=0;i<returnC.vars.length;i++){
-                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
-                }
-                resultP.setText("Satisfiability : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
-            }
-            else {
-                resultP.setText("Satisfiability : false");
-            }
+            resultP.setText("Satisfiability : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
         }
+
         else {
             elapsedG.setText("Elapsed time : "+elapsedTime+" s");
-            if(returnC.vars!=null){
-                listView.getItems().remove(0,listView.getItems().size());
-                for(int i=0;i<returnC.vars.length;i++){
-                    listView.getItems().add(i,"X"+i+": "+returnC.vars[i]);
-                }
-                resultG.setText("instance generation : "+returnC.gen+"\nSatisfiability : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
-            }
-            else {
-                resultG.setText("Satisfiability : false");
-            }
+            resultG.setText("instance generation : "+returnC.gen+"\nSatisfiability : "+returnC.satisfied+"\nnb Clauses satisfaite : "+returnC.score);
+
         }
 
     }

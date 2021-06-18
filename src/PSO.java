@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -21,9 +23,8 @@ public class PSO extends Recherche{
         pbest=new Particule[nbParticule];
         gbest= new Particule();
         for (int i = 0; i < nbParticule; i++) {
-            particules.add(new Particule(randomParticule(),(float)0.2));
+            particules.add(new Particule(randomParticule(),new BigInteger("1") ));
             particules.get(i).score=testAstar(particules.get(i).position);
-            printArray(particules.get(i).position);
             pbest[i]=particules.get(i);
 
             if(pbest[i].score>gbest.score){
@@ -31,8 +32,6 @@ public class PSO extends Recherche{
             }
 
         }
-        printArray(gbest.position);
-        System.out.println("score : "+gbest.score);
         initR();
 
     }
@@ -42,7 +41,6 @@ public class PSO extends Recherche{
         for (int i = 0; i < nbIteration; i++) {
             System.out.println("iteration : "+i);
             for (int j = 0; j < particules.size(); j++) {
-                System.out.println("particule "+j);
                 //update position and velocity or the current particle
                 Particule newp=updateVelocity(particules.get(j),j);
                 newp.score=testAstar(newp.position);
@@ -56,6 +54,8 @@ public class PSO extends Recherche{
             }
             //update gbest
             updateGbest();
+            System.out.println("gbest score : "+gbest.score);
+
             if(gbest.score==nbC){
                 System.out.println("found");
                 ReturnClass ret= new ReturnClass(gbest.position,gbest.score,true);
@@ -70,7 +70,6 @@ public class PSO extends Recherche{
 
 
     public void updateGbest(){
-        System.out.println("updating gbest");
         for (int i = 0; i < particules.size(); i++) {
             if(particules.get(i).score>=gbest.score){
                 gbest=particules.get(i);
@@ -79,47 +78,46 @@ public class PSO extends Recherche{
     }
 
     public Particule updateVelocity(Particule particule, int i){
-        System.out.println("updating velocity");
         Particule newPar;
-        int currentPos=binaryToDecimal(particule.position);
+        BigInteger currentPos=binaryToDecimal(particule.position);
         //calculate v(t+1)
-        int v=Math.round(w*particule.velocity+ c1*r1*(binaryToDecimal(pbest[i].position)-currentPos)
-                + c2*r2*(binaryToDecimal(gbest.position)-currentPos)) ;
-        initR();
+        BigInteger yo1=BigDecimal.valueOf(c1*r1).toBigInteger();
+        BigInteger yo2=BigDecimal.valueOf(c2*r2).toBigInteger();
+        BigInteger yo3=BigDecimal.valueOf(w).toBigInteger();
+        BigInteger v=particule.velocity.multiply(yo3).add ((binaryToDecimal(pbest[i].position)
+                .subtract(currentPos)).multiply(yo1)).add((binaryToDecimal(gbest.position)
+                .subtract(currentPos)).multiply(yo2));
 
+        initR();
+        BigInteger truevmax=new BigInteger(String.valueOf(vmax));
         //verify if v is superior than vmax
-        if(v>vmax || v<-vmax){
-            if(v<0){
-                v=-vmax;
-            }
-            else {
-                v=vmax;
-            }
+        if(v.compareTo(truevmax) > 0){
+            v=truevmax;
+        }
+        if(v.compareTo(truevmax.multiply(new BigInteger("-1"))) < 0){
+            v=truevmax.multiply(new BigInteger("-1"));
         }
 
         //update particle position
-        int x=currentPos+v;
+        BigInteger x=currentPos.add(v);
         newPar= new Particule(decimalToBinary(x),v);
-        printArray(newPar.position);
         return newPar;
     }
 
 
 
-    public int binaryToDecimal(int[] vars){
-        System.out.println("binary to decimal");
+    public BigInteger binaryToDecimal(int[] vars){
         String s="";
         for (int i = 0; i < vars.length; i++) {
             s+=vars[variableLength-i-1];
         }
-        return Integer.parseInt(s,2);
+        BigInteger big= new BigInteger(s,2);
+        return big;
     }
 
-    public int[] decimalToBinary(int var){
-        System.out.println("decimal to binary");
+    public int[] decimalToBinary(BigInteger var){
         int[] vars= new int[variableLength];
-        String binary= Integer.toBinaryString(var);
-        System.out.println(binary);
+        String binary= var.toString(2);
         for (int i = 0; i < variableLength; i++) {
             if(i<binary.length()){
                 vars[variableLength-i-1]=Integer.parseInt(String.valueOf(binary.charAt(i)));
